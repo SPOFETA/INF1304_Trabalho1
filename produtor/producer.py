@@ -3,6 +3,7 @@ import json
 import random
 import os
 import time
+import socket
 
 
 def obter_config():
@@ -33,8 +34,13 @@ def dict_para_json(sensor_id):
 def iniciar_sensores():
     """Inicia o ciclo de vida do produtor, enviando leituras continuamente."""
     servidores = obter_config()
-    sensor_id = os.getenv('SENSOR_ID', 'desconhecido')
+
+    nome_base = os.getenv('SENSOR_NOME', 'desconhecido')
+    id_container = socket.gethostname()
+    sensor_id = f"{nome_base}-{id_container}"
+
     produtor = Producer({'bootstrap.servers': servidores}) # bootstrap: Fornece os hosts iniciais que servem como ponto de partida para que um cliente Kafka descubra o conjunto completo de servidores ativos
+    
     try:
         while True:
             produtor.produce('dados-sensores', key=sensor_id.encode('utf-8'), value=dict_para_json(sensor_id).encode('utf-8'), callback=relatar_entrega)
@@ -43,7 +49,7 @@ def iniciar_sensores():
     except KeyboardInterrupt:
         pass
     finally:
-        produtor.flush()
+        produtor.flush() # garante que a comunicação não é perdida antes de fechar
 
 def relatar_entrega(err, msg):
     """Callback executado pelo Kafka para confirmar o sucesso ou falha da entrega."""

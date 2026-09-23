@@ -56,6 +56,6 @@ def relatar_entrega(err, msg):
     if err is not None:
         print(f'Falha ao entregar mensagem do sensor {msg.key()}: {err}')
     else:
-        print(f'Entrege: sensor {msg.key()} -> particao {msg.partition()}')
+        print(f'Entrege: sensor {msg.key().decode('utf-8')} -> particao {msg.partition()}')
 
 if __name__ == "__main__": iniciar_sensores()

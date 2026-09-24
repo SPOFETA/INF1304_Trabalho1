@@ -1,0 +1,4 @@
+__pycache__/
+# Dados processados pelos consumidores (grandes e regenerados a cada execução).
+# As evidências em logs/evidencias/ devem ser versionadas para a entrega.
+logs/consumidores/*.log

@@ -1,0 +1,98 @@
+NAME                                   IMAGE                                COMMAND                  SERVICE           CREATED          STATUS              PORTS
+consumer-1                             inf1304-trabalho-1-consumer-1        "python -u consumer.…"   consumer-1        3 minutes ago    Up 48 seconds       
+consumer-2                             inf1304-trabalho-1-consumer-2        "python -u consumer.…"   consumer-2        3 minutes ago    Up 2 minutes        
+consumer-3                             inf1304-trabalho-1-consumer-3        "python -u consumer.…"   consumer-3        20 seconds ago   Up 20 seconds       
+inf1304-trabalho-1-sensor-produtor-1   inf1304-trabalho-1-sensor-produtor   "python -u producer.…"   sensor-produtor   3 minutes ago    Up 2 minutes        
+inf1304-trabalho-1-sensor-produtor-2   inf1304-trabalho-1-sensor-produtor   "python -u producer.…"   sensor-produtor   3 minutes ago    Up 2 minutes        
+inf1304-trabalho-1-sensor-produtor-3   inf1304-trabalho-1-sensor-produtor   "python -u producer.…"   sensor-produtor   22 seconds ago   Up 21 seconds       
+inf1304-trabalho-1-sensor-produtor-4   inf1304-trabalho-1-sensor-produtor   "python -u producer.…"   sensor-produtor   22 seconds ago   Up 21 seconds       
+kafka-1                                apache/kafka:4.2.0                   "/__cacert_entrypoin…"   kafka-1           3 minutes ago    Up 3 minutes        9092/tcp
+kafka-2                                apache/kafka:4.2.0                   "/__cacert_entrypoin…"   kafka-2           3 minutes ago    Up About a minute   9092/tcp
+kafka-3                                apache/kafka:4.2.0                   "/__cacert_entrypoin…"   kafka-3           3 minutes ago    Up 3 minutes        9092/tcp
+===== Tópico dados-sensores (2026-09-24T15:18:25Z) =====
+Topic: dados-sensores	TopicId: 2Gx7gBI7Q-6U5kfVFZcZ0Q	PartitionCount: 3	ReplicationFactor: 2	Configs: min.insync.replicas=1
+	Topic: dados-sensores	Partition: 0	Leader: 3	Replicas: 2,3	Isr: 2,3	Elr: 	LastKnownElr: 
+	Topic: dados-sensores	Partition: 1	Leader: 3	Replicas: 3,1	Isr: 3,1	Elr: 	LastKnownElr: 
+	Topic: dados-sensores	Partition: 2	Leader: 1	Replicas: 1,2	Isr: 1,2	Elr: 	LastKnownElr: 
+===== Grupo grupo-sensores =====
+
+GROUP           TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                     HOST            CLIENT-ID
+grupo-sensores  dados-sensores  0          61              65              4               consumer-1-6a392589-503d-44a1-bcc6-d8e77563ebf4 /172.18.0.7     consumer-1
+grupo-sensores  dados-sensores  2          69              69              0               consumer-3-2855b72c-06c6-4fc6-872c-4295e552bdfc /172.18.0.11    consumer-3
+grupo-sensores  dados-sensores  1          60              61              1               consumer-2-5d0ea716-5e38-47a4-a9ba-6f1237003927 /172.18.0.5     consumer-2
+===== Logs de consumer-1 consumer-2 consumer-3 desde 2026-09-24T15:18:03Z =====
+consumer-3  | 2026-09-24T15:18:05.367051545Z Consumidor consumer-3 iniciado. Log em /app/logs/consumer-3.log
+consumer-3  | 2026-09-24T15:18:06.507133700Z [REBALANCE] Partições atribuídas: [2]
+consumer-3  | 2026-09-24T15:18:08.132933866Z Sensor: sensor-fabrica-9a34c5295be6 | Temperatura: 45.97 | Vibração: 0.17 | Partição: 2
+consumer-3  | 2026-09-24T15:18:08.132952704Z [ALERTA] Sensor sensor-fabrica-9a34c5295be6 com temperatura 45.97 acima do limite de 45.0
+consumer-3  | 2026-09-24T15:18:10.130176923Z Sensor: sensor-fabrica-9a34c5295be6 | Temperatura: 50.64 | Vibração: 1.95 | Partição: 2
+consumer-3  | 2026-09-24T15:18:10.130495857Z [ALERTA] Sensor sensor-fabrica-9a34c5295be6 com temperatura 50.64 acima do limite de 45.0
+consumer-3  | 2026-09-24T15:18:10.358817938Z Sensor: sensor-fabrica-21c37624e4a6 | Temperatura: 3.21 | Vibração: 5.21 | Partição: 2
+consumer-3  | 2026-09-24T15:18:11.830627403Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 27.52 | Vibração: 0.03 | Partição: 2
+consumer-3  | 2026-09-24T15:18:12.132143132Z Sensor: sensor-fabrica-9a34c5295be6 | Temperatura: 0.68 | Vibração: 1.2 | Partição: 2
+consumer-3  | 2026-09-24T15:18:12.504082382Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 18.6 | Vibração: 3.7 | Partição: 2
+consumer-3  | 2026-09-24T15:18:14.360118614Z Sensor: sensor-fabrica-21c37624e4a6 | Temperatura: 46.77 | Vibração: 3.11 | Partição: 2
+consumer-3  | 2026-09-24T15:18:14.360136891Z [ALERTA] Sensor sensor-fabrica-21c37624e4a6 com temperatura 46.77 acima do limite de 45.0
+consumer-3  | 2026-09-24T15:18:16.129954400Z Sensor: sensor-fabrica-9a34c5295be6 | Temperatura: 13.16 | Vibração: 2.8 | Partição: 2
+consumer-3  | 2026-09-24T15:18:16.503211939Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 8.22 | Vibração: 2.33 | Partição: 2
+consumer-3  | 2026-09-24T15:18:18.359552896Z Sensor: sensor-fabrica-21c37624e4a6 | Temperatura: 6.23 | Vibração: 2.84 | Partição: 2
+consumer-3  | 2026-09-24T15:18:20.361400549Z Sensor: sensor-fabrica-21c37624e4a6 | Temperatura: 58.76 | Vibração: 0.42 | Partição: 2
+consumer-3  | 2026-09-24T15:18:20.361562570Z [ALERTA] Sensor sensor-fabrica-21c37624e4a6 com temperatura 58.76 acima do limite de 45.0
+consumer-3  | 2026-09-24T15:18:22.130850360Z Sensor: sensor-fabrica-9a34c5295be6 | Temperatura: 2.16 | Vibração: 1.71 | Partição: 2
+consumer-3  | 2026-09-24T15:18:24.132245762Z Sensor: sensor-fabrica-9a34c5295be6 | Temperatura: 10.3 | Vibração: 1.97 | Partição: 2
+consumer-3  | 2026-09-24T15:18:24.361310407Z Sensor: sensor-fabrica-21c37624e4a6 | Temperatura: 56.8 | Vibração: 2.96 | Partição: 2
+consumer-3  | 2026-09-24T15:18:24.361326621Z [ALERTA] Sensor sensor-fabrica-21c37624e4a6 com temperatura 56.8 acima do limite de 45.0
+consumer-3  | 2026-09-24T15:18:26.136415267Z Sensor: sensor-fabrica-9a34c5295be6 | Temperatura: 33.28 | Vibração: 6.18 | Partição: 2
+consumer-3  | 2026-09-24T15:18:27.835924527Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 8.81 | Vibração: 5.18 | Partição: 2
+consumer-3  | 2026-09-24T15:18:28.363731509Z Sensor: sensor-fabrica-21c37624e4a6 | Temperatura: 29.54 | Vibração: 3.91 | Partição: 2
+consumer-2  | 2026-09-24T15:18:03.839038985Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 5.43 | Vibração: 0.84 | Partição: 2
+consumer-2  | 2026-09-24T15:18:06.131109257Z Sensor: sensor-fabrica-9a34c5295be6 | Temperatura: 9.9 | Vibração: 0.33 | Partição: 2
+consumer-2  | 2026-09-24T15:18:06.364704359Z Sensor: sensor-fabrica-21c37624e4a6 | Temperatura: 55.6 | Vibração: 1.77 | Partição: 2
+consumer-2  | 2026-09-24T15:18:06.364725400Z [ALERTA] Sensor sensor-fabrica-21c37624e4a6 com temperatura 55.6 acima do limite de 45.0
+consumer-2  | 2026-09-24T15:18:06.495248529Z [REBALANCE] Partições revogadas: [2]
+consumer-2  | 2026-09-24T15:18:06.507108953Z [REBALANCE] Partições atribuídas: [1]
+consumer-2  | 2026-09-24T15:18:06.509061256Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 30.78 | Vibração: 0.5 | Partição: 1
+consumer-2  | 2026-09-24T15:18:07.830153906Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 35.1 | Vibração: 1.14 | Partição: 1
+consumer-2  | 2026-09-24T15:18:08.357787150Z Sensor: sensor-fabrica-21c37624e4a6 | Temperatura: 10.6 | Vibração: 6.39 | Partição: 1
+consumer-2  | 2026-09-24T15:18:08.502744990Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 17.65 | Vibração: 2.3 | Partição: 1
+consumer-2  | 2026-09-24T15:18:14.131724747Z Sensor: sensor-fabrica-9a34c5295be6 | Temperatura: 41.12 | Vibração: 4.16 | Partição: 1
+consumer-2  | 2026-09-24T15:18:14.502907070Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: -1.54 | Vibração: 0.38 | Partição: 1
+consumer-2  | 2026-09-24T15:18:15.831221048Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 51.95 | Vibração: 5.47 | Partição: 1
+consumer-2  | 2026-09-24T15:18:15.831240537Z [ALERTA] Sensor sensor-fabrica-5fc173b93ca4 com temperatura 51.95 acima do limite de 45.0
+consumer-2  | 2026-09-24T15:18:17.831295194Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 46.72 | Vibração: 2.71 | Partição: 1
+consumer-2  | 2026-09-24T15:18:17.831317006Z [ALERTA] Sensor sensor-fabrica-5fc173b93ca4 com temperatura 46.72 acima do limite de 45.0
+consumer-2  | 2026-09-24T15:18:20.506117902Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 18.05 | Vibração: 0.58 | Partição: 1
+consumer-2  | 2026-09-24T15:18:21.832550773Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 0.07 | Vibração: 2.88 | Partição: 1
+consumer-2  | 2026-09-24T15:18:22.504277882Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 15.16 | Vibração: 1.0 | Partição: 1
+consumer-2  | 2026-09-24T15:18:23.832681373Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 55.04 | Vibração: 3.6 | Partição: 1
+consumer-2  | 2026-09-24T15:18:23.832700752Z [ALERTA] Sensor sensor-fabrica-5fc173b93ca4 com temperatura 55.04 acima do limite de 45.0
+consumer-2  | 2026-09-24T15:18:24.504335665Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 4.59 | Vibração: 2.98 | Partição: 1
+consumer-2  | 2026-09-24T15:18:26.507211126Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 26.49 | Vibração: 4.72 | Partição: 1
+consumer-2  | 2026-09-24T15:18:28.505647988Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 7.51 | Vibração: 5.72 | Partição: 1
+consumer-2  | 2026-09-24T15:18:30.367047576Z Sensor: sensor-fabrica-21c37624e4a6 | Temperatura: 42.13 | Vibração: 2.57 | Partição: 1
+consumer-1  | 2026-09-24T15:18:04.135777712Z Sensor: sensor-fabrica-9a34c5295be6 | Temperatura: 18.08 | Vibração: 4.73 | Partição: 0
+consumer-1  | 2026-09-24T15:18:04.376390888Z Sensor: sensor-fabrica-21c37624e4a6 | Temperatura: 14.35 | Vibração: 1.18 | Partição: 1
+consumer-1  | 2026-09-24T15:18:04.502582817Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 6.28 | Vibração: 1.08 | Partição: 1
+consumer-1  | 2026-09-24T15:18:05.829862327Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 12.41 | Vibração: 5.84 | Partição: 1
+consumer-1  | 2026-09-24T15:18:06.495435977Z [REBALANCE] Partições revogadas: [0, 1]
+consumer-1  | 2026-09-24T15:18:06.506625224Z [REBALANCE] Partições atribuídas: [0]
+consumer-1  | 2026-09-24T15:18:09.830625865Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 58.59 | Vibração: 1.2 | Partição: 0
+consumer-1  | 2026-09-24T15:18:09.830858270Z [ALERTA] Sensor sensor-fabrica-5fc173b93ca4 com temperatura 58.59 acima do limite de 45.0
+consumer-1  | 2026-09-24T15:18:10.504904628Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 30.54 | Vibração: 0.38 | Partição: 0
+consumer-1  | 2026-09-24T15:18:12.364675754Z Sensor: sensor-fabrica-21c37624e4a6 | Temperatura: 50.39 | Vibração: 1.78 | Partição: 0
+consumer-1  | 2026-09-24T15:18:12.364747421Z [ALERTA] Sensor sensor-fabrica-21c37624e4a6 com temperatura 50.39 acima do limite de 45.0
+consumer-1  | 2026-09-24T15:18:13.831098920Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 26.24 | Vibração: 4.31 | Partição: 0
+consumer-1  | 2026-09-24T15:18:16.359337760Z Sensor: sensor-fabrica-21c37624e4a6 | Temperatura: 23.63 | Vibração: 3.87 | Partição: 0
+consumer-1  | 2026-09-24T15:18:18.130851020Z Sensor: sensor-fabrica-9a34c5295be6 | Temperatura: 49.65 | Vibração: 4.32 | Partição: 0
+consumer-1  | 2026-09-24T15:18:18.131019771Z [ALERTA] Sensor sensor-fabrica-9a34c5295be6 com temperatura 49.65 acima do limite de 45.0
+consumer-1  | 2026-09-24T15:18:18.509198086Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 8.04 | Vibração: 1.72 | Partição: 0
+consumer-1  | 2026-09-24T15:18:19.832399732Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 9.94 | Vibração: 0.14 | Partição: 0
+consumer-1  | 2026-09-24T15:18:20.130869824Z Sensor: sensor-fabrica-9a34c5295be6 | Temperatura: 40.05 | Vibração: 0.62 | Partição: 0
+consumer-1  | 2026-09-24T15:18:22.362230159Z Sensor: sensor-fabrica-21c37624e4a6 | Temperatura: 37.25 | Vibração: 2.6 | Partição: 0
+consumer-1  | 2026-09-24T15:18:25.838934116Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 33.55 | Vibração: 2.8 | Partição: 0
+consumer-1  | 2026-09-24T15:18:26.364420958Z Sensor: sensor-fabrica-21c37624e4a6 | Temperatura: 12.49 | Vibração: 4.81 | Partição: 0
+consumer-1  | 2026-09-24T15:18:28.131384333Z Sensor: sensor-fabrica-9a34c5295be6 | Temperatura: 48.52 | Vibração: 1.34 | Partição: 0
+consumer-1  | 2026-09-24T15:18:28.131411473Z [ALERTA] Sensor sensor-fabrica-9a34c5295be6 com temperatura 48.52 acima do limite de 45.0
+consumer-1  | 2026-09-24T15:18:29.835753910Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 1.73 | Vibração: 4.93 | Partição: 0
+consumer-1  | 2026-09-24T15:18:30.139733283Z Sensor: sensor-fabrica-9a34c5295be6 | Temperatura: 13.85 | Vibração: 3.31 | Partição: 0
+consumer-1  | 2026-09-24T15:18:30.509399793Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 38.73 | Vibração: 1.57 | Partição: 0

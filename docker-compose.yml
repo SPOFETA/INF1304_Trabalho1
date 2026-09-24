@@ -1,131 +1,168 @@
 name: inf1304-trabalho-1
 
+# Configuração comum aos 3 nós Kafka (modo KRaft: cada nó é broker e controller).
+# São 3 nós porque o quorum de controllers precisa de maioria: com 3, a queda de
+# 1 nó ainda deixa 2 ativos e o cluster continua elegendo líderes. Com 2 nós,
+# a queda de qualquer um paralisaria o cluster.
+# Versão fixada (a mesma da tag latest usada na disciplina) para o resultado ser
+# reproduzível. Evite a 3.9.0: ela tem um bug que recusa CONTROLLER://0.0.0.0.
+x-kafka-comum: &kafka-comum
+  image: apache/kafka:4.2.0
+  deploy:
+    resources:
+      limits:
+        memory: 1G
+      reservations:
+        memory: 512M
+  networks:
+    - int-network
+
+x-kafka-env: &kafka-env
+  CLUSTER_ID: '4L6g3nShT-eMCtK--X86sw'
+  KAFKA_PROCESS_ROLES: 'broker,controller'
+  KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093'
+  KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093'
+  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT'
+  KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+  KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+  # Tópicos internos replicados para sobreviverem à queda de um broker
+  KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+  KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 2
+  # Desligado para garantir que o tópico seja criado só pelo init-kafka,
+  # com as partições e a replicação definidas abaixo
+  KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+  # Heap menor que o limite de memória do container, evitando OOM
+  KAFKA_HEAP_OPTS: '-Xmx512m -Xms512m'
+
+# Configuração comum aos consumidores (mesmo grupo = partições divididas entre eles).
+x-consumidor: &consumidor
+  build: ./consumidor
+  depends_on:
+    init-kafka:
+      condition: service_completed_successfully
+  volumes: # Logs de cada consumidor ficam no host para análise posterior
+    - ./logs/consumidores:/app/logs
+  networks:
+    - int-network
+
+x-consumidor-env: &consumidor-env
+  KAFKA_BOOTSTRAP_SERVERS: 'kafka-1:9092,kafka-2:9092,kafka-3:9092'
+  KAFKA_TOPICO: 'dados-sensores'
+  KAFKA_GROUP_ID: 'grupo-sensores'
+  LIMITE_TEMPERATURA: '45.0'
+
 services:
   kafka-1:
-    image: apache/kafka:latest
+    <<: *kafka-comum
     container_name: kafka-1
-    ports:
-      - "9092:9092"
+    hostname: kafka-1
     environment:
-      KAFKA_KRAFT_MODE: 'true'
-      CLUSTER_ID: '4L6g3nShT-eMCtK--X86sw'
+      <<: *kafka-env
       KAFKA_NODE_ID: 1
-      KAFKA_PROCESS_ROLES: 'broker,controller'
-      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-1:9093,2@kafka-2:9093'
-      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093'
       KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka-1:9092'
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT'
-      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
-      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 2
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-    volumes: # Montagem de volume para persistência de dados do Kafka
+    volumes:
       - kafka-data-1:/var/lib/kafka/data
-    deploy:
-      resources:
-        limits:
-          memory: 1G
-        reservations: 
-          memory: 512M
-    networks:
-      - int-network
 
   kafka-2:
-    image: apache/kafka:latest
+    <<: *kafka-comum
     container_name: kafka-2
-    ports: 
-      - "9094:9092" # Portas para comunicação com clientes Kafka, esquerda exterior - direta dentro do container
+    hostname: kafka-2
     environment:
-      KAFKA_KRAFT_MODE: 'true'
-      CLUSTER_ID: '4L6g3nShT-eMCtK--X86sw'
+      <<: *kafka-env
       KAFKA_NODE_ID: 2
-      KAFKA_PROCESS_ROLES: 'broker,controller' # Define os papéis do nó Kafka (broker e controller)
-      # Controller interno
-      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-1:9093,2@kafka-2:9093'
-      # Listeners
-      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093'
       KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka-2:9092'
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT'
-      # Listener usado pelos brokers para comunicação interna
-      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
-      # Listener usado pelo controller
-      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
-      # Configurações para um único broker
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 2
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     volumes:
       - kafka-data-2:/var/lib/kafka/data
-    deploy:
-      resources:
-        limits:
-          memory: 1G
-        reservations:
-          memory: 512M
-    networks:
-      - int-network
-  
-  init-kafka: # Containter temporoario para criar o topico conforme o enunciado
-    image: apache/kafka:latest
+
+  kafka-3:
+    <<: *kafka-comum
+    container_name: kafka-3
+    hostname: kafka-3
+    environment:
+      <<: *kafka-env
+      KAFKA_NODE_ID: 3
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka-3:9092'
+    volumes:
+      - kafka-data-3:/var/lib/kafka/data
+
+  # Container temporário: espera o cluster responder, cria o tópico e termina.
+  # Produtores e consumidores só sobem depois que ele termina com sucesso.
+  init-kafka:
+    image: apache/kafka:4.2.0
     container_name: init-kafka
     depends_on:
       - kafka-1
       - kafka-2
+      - kafka-3
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: 'kafka-1:9092,kafka-2:9092,kafka-3:9092'
+      KAFKA_TOPICO: 'dados-sensores'
+      KAFKA_PARTICOES: 3
+      KAFKA_REPLICACAO: 2
     networks:
       - int-network
     entrypoint: [ "/bin/sh", "-c" ]
-    command: |
-      
-      echo 'A aguardar que o Kafka inicie...'
-      sleep 15
-      /opt/kafka/bin/kafka-topics.sh --create --if-not-exists --topic dados-sensores --bootstrap-server kafka-1:9092 --partitions 2 --replication-factor 2
-      echo 'Tópico dados-sensores criado com sucesso!'
-  
+    # Em forma de lista para o compose não dividir o script em vários argumentos.
+    # $$ escapa o $ para que a variável seja lida pelo shell do container, não pelo compose.
+    command:
+      - |
+        inicio=$$(date +%s)
+        until /opt/kafka/bin/kafka-topics.sh --bootstrap-server $$KAFKA_BOOTSTRAP_SERVERS --list > /dev/null 2>&1; do
+          if [ $$(( $$(date +%s) - inicio )) -ge 180 ]; then
+            echo 'Cluster Kafka não respondeu em 3 minutos. Veja: docker compose logs kafka-1'
+            exit 1
+          fi
+          echo 'Aguardando o cluster Kafka...'
+          sleep 3
+        done
+        /opt/kafka/bin/kafka-topics.sh --bootstrap-server $$KAFKA_BOOTSTRAP_SERVERS --create --if-not-exists --topic $$KAFKA_TOPICO --partitions $$KAFKA_PARTICOES --replication-factor $$KAFKA_REPLICACAO
+        /opt/kafka/bin/kafka-topics.sh --bootstrap-server $$KAFKA_BOOTSTRAP_SERVERS --describe --topic $$KAFKA_TOPICO
+
+  # Sensores: sem container_name para permitir escalar (docker compose up --scale sensor-produtor=N).
   sensor-produtor:
     build: ./produtor
-    environment:
-      KAFKA_BOOTSTRAP_SERVERS: 'kafka-1:9092,kafka-2:9092'
-      SENSOR_NOME: 'sensor-fabrica'
+    deploy:
+      replicas: 2
     depends_on:
-      - init-kafka
+      init-kafka:
+        condition: service_completed_successfully
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: 'kafka-1:9092,kafka-2:9092,kafka-3:9092'
+      KAFKA_TOPICO: 'dados-sensores'
+      SENSOR_NOME: 'sensor-fabrica'
+      INTERVALO_ENVIO: '2'
     networks:
       - int-network
 
   consumer-1:
-    build: ./consumidor
+    <<: *consumidor
     container_name: consumer-1
-    depends_on:
-      - kafka-1
-      - kafka-2
+    hostname: consumer-1
     environment:
-      KAFKA_BOOTSTRAP_SERVERS: kafka-1:9092,kafka-2:9092
-      KAFKA_GROUP_ID: grupo-sensores
-    networks:
-      - int-network
+      <<: *consumidor-env
 
   consumer-2:
-    build: ./consumidor
+    <<: *consumidor
     container_name: consumer-2
-    depends_on:
-      - kafka-1
-      - kafka-2
+    hostname: consumer-2
     environment:
-      KAFKA_BOOTSTRAP_SERVERS: kafka-1:9092,kafka-2:9092
-      KAFKA_GROUP_ID: grupo-sensores
-    networks:
-      - int-network
+      <<: *consumidor-env
+
+  # Consumidor extra usado só na demonstração de elasticidade
+  # (sobe com: docker compose up -d consumer-3).
+  consumer-3:
+    <<: *consumidor
+    container_name: consumer-3
+    hostname: consumer-3
+    profiles: [ "extra" ]
+    environment:
+      <<: *consumidor-env
 
 volumes:
   kafka-data-1:
   kafka-data-2:
+  kafka-data-3:
 
 networks:
-  ext-network:
-    driver: bridge
   int-network:
     driver: bridge
-    internal: true
-  

@@ -116,12 +116,12 @@ antes, para apagar os volumes antigos do Kafka.
 | `make elasticidade N=4` | Escala os sensores para N e adiciona o `consumer-3` |
 | `make clean` | Remove containers, volumes e imagens do projeto |
 
-Exemplo de saída de um consumidor:
+Exemplo de saída de um consumidor (trecho real de `01_estado_inicial.txt`):
 
 ```
 [REBALANCE] Partições atribuídas: [0, 1]
-Sensor: sensor-fabrica-3f2a1c9e0b7d | Temperatura: 52.31 | Vibração: 2.87 | Partição: 1
-[ALERTA] Sensor sensor-fabrica-3f2a1c9e0b7d com temperatura 52.31 acima do limite de 45.0
+Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 50.08 | Vibração: 7.24 | Partição: 0
+[ALERTA] Sensor sensor-fabrica-5fc173b93ca4 com temperatura 50.08 acima do limite de 45.0
 ```
 
 ## 6. Testes de falha e elasticidade
@@ -133,37 +133,78 @@ do tópico (líder e réplicas de cada partição), a descrição do grupo de co
 
 ### 6.1 Estado inicial — `01_estado_inicial.txt`
 
-- **O que verificar:** o tópico tem 3 partições, cada uma com 2 réplicas
-  (`ReplicationFactor: 2`) distribuídas entre os brokers; no grupo, as 3
-  partições estão divididas entre `consumer-1` e `consumer-2`.
+- **Esperado:** tópico com 3 partições e 2 réplicas cada, distribuídas entre os
+  brokers; partições divididas entre `consumer-1` e `consumer-2`.
+- **Resultado:** conforme o esperado. Cada broker lidera uma partição e cada
+  partição tem réplica em outro broker:
+
+  ```
+  Partition: 0    Leader: 2    Replicas: 2,3    Isr: 2,3
+  Partition: 1    Leader: 3    Replicas: 3,1    Isr: 3,1
+  Partition: 2    Leader: 1    Replicas: 1,2    Isr: 1,2
+  ```
+
+  O Kafka dividiu as partições entre os consumidores
+  (`consumer-1 → [0, 1]`, `consumer-2 → [2]`), e os alertas aparecem para
+  leituras acima de 45,0, por exemplo:
+  `[ALERTA] Sensor sensor-fabrica-f757762476a7 com temperatura 57.38 acima do limite de 45.0`.
 
 ### 6.2 Queda de broker — `02_falha_broker.txt`
 
 - **Ação:** `docker compose stop kafka-2`.
-- **Esperado:** as partições que tinham o broker 2 como líder passam a ter
-  outro líder, e o broker 2 some da coluna `Isr`. Os logs do período mostram os
-  sensores recebendo `Entregue -> partição ...` e os consumidores processando
-  leituras normalmente.
+- **Esperado:** as partições lideradas pelo broker 2 ganham outro líder, e o
+  sistema segue produzindo e consumindo.
+- **Resultado:** conforme o esperado. A partição 0 passou do líder 2 para o
+  líder 3, e o broker 2 saiu da lista de réplicas sincronizadas:
+
+  ```
+  Partition: 0    Leader: 3    Replicas: 2,3    Isr: 3
+  Partition: 2    Leader: 1    Replicas: 1,2    Isr: 1
+  ```
+
+  O produtor registrou a desconexão do `kafka-2` e continuou entregando uma
+  leitura a cada 2 s, sem falhas de entrega (`Entregue -> partição ...`). Os
+  consumidores continuaram processando normalmente.
 
 ### 6.3 Queda de consumidor — `03_falha_consumidor.txt`
 
 - **Ação:** `docker compose stop consumer-1` e, depois, `docker compose start consumer-1`.
-- **Esperado:** o `consumer-2` registra `[REBALANCE] Partições revogadas` e em
-  seguida `[REBALANCE] Partições atribuídas: [0, 1, 2]`, assumindo as partições
-  do `consumer-1`. A descrição do grupo mostra só o `consumer-2`. Quando o
-  `consumer-1` volta, há um novo rebalanceamento e as partições são
-  divididas outra vez.
+- **Esperado:** o `consumer-2` assume as partições do `consumer-1`; quando o
+  `consumer-1` volta, a carga é dividida de novo.
+- **Resultado:** conforme o esperado. O rebalanceamento levou cerca de 0,15 s:
+
+  ```
+  15:17:02.820  consumer-1  [REBALANCE] Partições revogadas: [0, 1]
+  15:17:02.913  consumer-2  [REBALANCE] Partições revogadas: [2]
+  15:17:02.977  consumer-2  [REBALANCE] Partições atribuídas: [0, 1, 2]
+  ```
+
+  Com o `consumer-1` fora, a descrição do grupo mostra as três partições com o
+  `consumer-2`. Depois que ele volta, a divisão se refaz (`consumer-1 → [0, 1]`,
+  `consumer-2 → [2]`). Nesse momento o `kafka-2`, religado no teste anterior,
+  já aparece de novo no ISR (`Isr: 2,3`). A liderança da partição 0 continuou
+  com o broker 3, porque o Kafka só devolve a liderança ao líder preferido
+  periodicamente (a cada 5 minutos, por padrão).
 
 ### 6.4 Elasticidade — `04_elasticidade.txt`
 
-- **Ação:** escala `sensor-produtor` para 4 réplicas e sobe o `consumer-3`.
-- **Esperado:** aparecem 4 containers de sensor, com leituras de 4 `sensor_id`
-  diferentes. O grupo de consumo passa a ter 3 membros, cada um com uma
-  partição, sem que nenhum serviço tenha sido reiniciado.
+- **Ação:** escala `sensor-produtor` para 4 réplicas e sobe o `consumer-3`,
+  com o sistema em execução.
+- **Esperado:** 4 sensores ativos e o grupo de consumo com 3 membros.
+- **Resultado:** conforme o esperado. Os logs passam a mostrar leituras de 4
+  sensores diferentes (`f757762476a7`, `5fc173b93ca4`, `9a34c5295be6` e
+  `21c37624e4a6`). Cerca de 1 s após subir, o `consumer-3` recebeu uma partição,
+  e o grupo ficou com uma partição por consumidor:
+
+  ```
+  consumer-1 → [0]    consumer-2 → [1]    consumer-3 → [2]
+  ```
+
+  Nenhum serviço precisou ser reiniciado.
 
 ## 7. O que funcionou e o que não funcionou
 
-**Funcionou:** _(conferir com as evidências de `make demo` antes da entrega)_
+**Funcionou** (comprovado pelas evidências em `logs/evidencias/`):
 
 - Cluster Kafka com 3 brokers, tópico com 3 partições e replicação 2
 - Sensores como produtores em containers distintos, escaláveis

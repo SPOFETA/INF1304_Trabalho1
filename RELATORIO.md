@@ -2,7 +2,13 @@
 
 **Disciplina:** INF1304 — Distribuição e Concorrência (2026/1)
 **Tema:** Balanceamento de Carga, Elasticidade e Failover com Kafka em Clusters Docker
-**Integrantes:** _(preencher)_
+**Integrantes:**
+
+| Nome | Matrícula |
+|---|---|
+| Miguel Mendes | 2111705 |
+| _(nome)_ | _(matrícula)_ |
+| _(nome)_ | _(matrícula)_ |
 
 ---
 
@@ -35,7 +41,7 @@ cai, e aceita novos sensores e consumidores sem ser reiniciado.
 
 | Serviço | Papel |
 |---|---|
-| `kafka-1`, `kafka-2`, `kafka-3` | Cluster Kafka em modo KRaft (sem Zookeeper). Cada nó é broker e controller. |
+| `kafka-1`, `kafka-2`, `kafka-3` | Cluster Kafka 4.2.0 em modo KRaft (sem Zookeeper). Cada nó é broker e controller. |
 | `init-kafka` | Container temporário: espera o cluster responder, cria o tópico `dados-sensores` e termina. |
 | `sensor-produtor` | Sensor simulado (Python). Envia uma leitura a cada `INTERVALO_ENVIO` segundos. Sobe com 2 réplicas e pode ser escalado. |
 | `consumer-1`, `consumer-2` | Processadores (Python) no mesmo grupo de consumo; o Kafka divide as partições entre eles. |
@@ -93,6 +99,9 @@ make ps          # confere se tudo subiu (init-kafka deve aparecer como "exited 
 
 Se uma versão anterior do projeto já foi executada na máquina, rode `make clean`
 antes, para apagar os volumes antigos do Kafka.
+
+**No GitHub Codespaces**, rode antes `sudo iptables-legacy -I FORWARD 1 -j ACCEPT`
+(o motivo está na seção 7). Em Docker Desktop ou Linux comum, não é necessário.
 
 ## 5. Operação
 
@@ -162,6 +171,32 @@ do tópico (líder e réplicas de cada partição), a descrição do grupo de co
 - Continuidade do serviço com um broker a menos
 - Rebalanceamento quando um consumidor sai ou entra no grupo
 - Detecção de temperatura acima do limite e gravação de leituras/alertas em arquivo
+
+**Problemas encontrados durante o desenvolvimento:**
+
+- Com a imagem `apache/kafka:3.9.0` os três brokers terminavam logo ao iniciar,
+  com o erro `advertised.listeners cannot use the nonroutable meta-address 0.0.0.0`.
+  A versão 3.9.0 passou a exigir um endereço anunciado para o listener do
+  controller e não aceitava o `CONTROLLER://0.0.0.0:9093` herdado de
+  `KAFKA_LISTENERS`. O código-fonte do Kafka mostra que isso foi corrigido a
+  partir da 3.9.1 (o `0.0.0.0` passou a ser trocado pelo hostname do nó). A
+  solução foi fixar a imagem em `apache/kafka:4.2.0`, a mesma apontada pela tag
+  `latest` usada no material da disciplina.
+
+- Com a versão corrigida, os brokers passaram a iniciar, mas desligavam após
+  ~60 s com `unable to register with the controller quorum`. Os logs mostravam
+  cada nó votando em si mesmo sem nunca receber resposta dos outros
+  (`UNRECORDED`) e várias linhas `Disconnecting from node N due to socket
+  connection setup timeout`: as conexões na porta 9093 nunca se completavam.
+  Para separar o problema do Kafka, subimos dois containers simples (um
+  servidor HTTP e um cliente) na mesma rede, e a conexão também dava timeout.
+  A causa estava no ambiente: no GitHub Codespaces o Docker roda dentro de
+  outro container, e a tabela antiga de firewall (`iptables-legacy`) tinha a
+  política `FORWARD DROP`, que descartava todo tráfego entre containers. O
+  Docker do projeto escreve suas regras de liberação na tabela nova (`nft`),
+  mas o kernel aplica as duas. A solução foi liberar o encaminhamento com
+  `sudo iptables-legacy -I FORWARD 1 -j ACCEPT`. Nenhuma mudança no projeto
+  foi necessária para isso.
 
 **Limitações conhecidas:**
 

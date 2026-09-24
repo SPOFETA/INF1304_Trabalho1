@@ -4,8 +4,10 @@ name: inf1304-trabalho-1
 # São 3 nós porque o quorum de controllers precisa de maioria: com 3, a queda de
 # 1 nó ainda deixa 2 ativos e o cluster continua elegendo líderes. Com 2 nós,
 # a queda de qualquer um paralisaria o cluster.
+# Versão fixada (a mesma da tag latest usada na disciplina) para o resultado ser
+# reproduzível. Evite a 3.9.0: ela tem um bug que recusa CONTROLLER://0.0.0.0.
 x-kafka-comum: &kafka-comum
-  image: apache/kafka:3.9.0
+  image: apache/kafka:4.2.0
   deploy:
     resources:
       limits:
@@ -53,6 +55,7 @@ services:
   kafka-1:
     <<: *kafka-comum
     container_name: kafka-1
+    hostname: kafka-1
     environment:
       <<: *kafka-env
       KAFKA_NODE_ID: 1
@@ -63,6 +66,7 @@ services:
   kafka-2:
     <<: *kafka-comum
     container_name: kafka-2
+    hostname: kafka-2
     environment:
       <<: *kafka-env
       KAFKA_NODE_ID: 2
@@ -73,6 +77,7 @@ services:
   kafka-3:
     <<: *kafka-comum
     container_name: kafka-3
+    hostname: kafka-3
     environment:
       <<: *kafka-env
       KAFKA_NODE_ID: 3
@@ -83,7 +88,7 @@ services:
   # Container temporário: espera o cluster responder, cria o tópico e termina.
   # Produtores e consumidores só sobem depois que ele termina com sucesso.
   init-kafka:
-    image: apache/kafka:3.9.0
+    image: apache/kafka:4.2.0
     container_name: init-kafka
     depends_on:
       - kafka-1
@@ -101,7 +106,12 @@ services:
     # $$ escapa o $ para que a variável seja lida pelo shell do container, não pelo compose.
     command:
       - |
+        inicio=$$(date +%s)
         until /opt/kafka/bin/kafka-topics.sh --bootstrap-server $$KAFKA_BOOTSTRAP_SERVERS --list > /dev/null 2>&1; do
+          if [ $$(( $$(date +%s) - inicio )) -ge 180 ]; then
+            echo 'Cluster Kafka não respondeu em 3 minutos. Veja: docker compose logs kafka-1'
+            exit 1
+          fi
           echo 'Aguardando o cluster Kafka...'
           sleep 3
         done
@@ -156,4 +166,3 @@ volumes:
 networks:
   int-network:
     driver: bridge
-    internal: true

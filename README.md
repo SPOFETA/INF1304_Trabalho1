@@ -24,6 +24,20 @@ make down    # para tudo
 > antes do primeiro `make up`: os volumes antigos guardam um cluster com outra
 > configuração e o tópico com o número errado de partições.
 
+## Rodando no GitHub Codespaces
+
+No Codespace, o Docker roda dentro de outro container e herda uma regra de
+firewall (`iptables-legacy`, `FORWARD policy DROP`) que bloqueia a comunicação
+entre containers. Os brokers sobem, mas não conseguem conversar entre si.
+Antes do `make up` ou `make demo`, libere o tráfego com:
+
+```bash
+sudo iptables-legacy -I FORWARD 1 -j ACCEPT
+```
+
+A regra vale até o Codespace ser reiniciado. Em Docker Desktop ou Linux
+comum, esse passo não é necessário.
+
 ## Testes individuais
 
 | Comando | O que faz |

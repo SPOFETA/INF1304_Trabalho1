@@ -32,7 +32,10 @@ logs_desde() {
 
 echo "[1/4] Subindo o sistema..."
 INICIO=$(agora)
-docker compose up -d --build
+if ! docker compose up -d --build; then
+  echo "Falha ao subir o sistema. Veja: docker compose ps -a && docker compose logs kafka-1"
+  exit 1
+fi
 sleep "$ESPERA"
 ARQ="$DIR/01_estado_inicial.txt"; : > "$ARQ"
 estado "$ARQ"

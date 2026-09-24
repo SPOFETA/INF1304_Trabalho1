@@ -94,6 +94,30 @@ services:
     networks:
       - int-network
 
+  consumer-1:
+    build: ./consumidor
+    container_name: consumer-1
+    depends_on:
+      - kafka-1
+      - kafka-2
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka-1:9092,kafka-2:9092
+      KAFKA_GROUP_ID: grupo-sensores
+    networks:
+      - int-network
+
+  consumer-2:
+    build: ./consumidor
+    container_name: consumer-2
+    depends_on:
+      - kafka-1
+      - kafka-2
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka-1:9092,kafka-2:9092
+      KAFKA_GROUP_ID: grupo-sensores
+    networks:
+      - int-network
+
 volumes:
   kafka-data-1:
   kafka-data-2:

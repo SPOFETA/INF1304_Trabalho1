@@ -7,7 +7,7 @@
 | Nome | Matrícula |
 |---|---|
 | Miguel Mendes | 2111705 |
-| _(nome)_ | _(matrícula)_ |
+| Simão Oliveira | 2620261 |
 | _(nome)_ | _(matrícula)_ |
 
 ---

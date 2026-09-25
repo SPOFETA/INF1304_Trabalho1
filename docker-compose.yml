@@ -50,6 +50,7 @@ x-consumidor-env: &consumidor-env
   KAFKA_TOPICO: 'dados-sensores'
   KAFKA_GROUP_ID: 'grupo-sensores'
   LIMITE_TEMPERATURA: '45.0'
+  LIMITE_VIBRACAO: '5.0'
 
 services:
   kafka-1:

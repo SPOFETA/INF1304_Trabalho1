@@ -21,6 +21,7 @@ def obter_config():
         "grupo": grupo,
         "topico": os.getenv("KAFKA_TOPICO", "dados-sensores"),
         "limite_temperatura": float(os.getenv("LIMITE_TEMPERATURA", "45.0")),
+        "limite_vibracao": float(os.getenv("LIMITE_VIBRACAO", "5.0")),
         "diretorio_log": os.getenv("DIRETORIO_LOG", "/app/logs"),
     }
 
@@ -42,7 +43,7 @@ def registrar(arquivo_log, linha):
     arquivo_log.flush()
 
 
-def processar_mensagem(msg, arquivo_log, limite_temperatura):
+def processar_mensagem(msg, arquivo_log, limite_temperatura, limite_vibracao):
     """Registra a leitura do sensor e gera um alerta se a temperatura passar do limite."""
     dados = json.loads(msg.value().decode("utf-8"))
 
@@ -59,6 +60,13 @@ def processar_mensagem(msg, arquivo_log, limite_temperatura):
             arquivo_log,
             f"[ALERTA] Sensor {dados['sensor_id']} com temperatura "
             f"{dados['temperatura']} acima do limite de {limite_temperatura}",
+        )
+
+    if dados["vibracao"] > limite_vibracao:
+        registrar(
+            arquivo_log,
+            f"[ALERTA] Sensor {dados['sensor_id']} com vibração "
+            f"{dados['temperatura']} acima do limite de {limite_vibracao}",
         )
 
 
@@ -104,7 +112,7 @@ def iniciar_consumidor():
                 if msg.error():
                     print(f"Erro ao consumir mensagem: {msg.error()}")
                     continue
-                processar_mensagem(msg, arquivo_log, config["limite_temperatura"])
+                processar_mensagem(msg, arquivo_log, config["limite_temperatura"], config["limite_vibracao"])
         except KeyboardInterrupt:
             pass
         finally:

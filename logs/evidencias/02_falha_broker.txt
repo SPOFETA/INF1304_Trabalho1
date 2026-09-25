@@ -1,80 +1,62 @@
-===== Tópico dados-sensores (2026-09-24T15:16:35Z) =====
-Topic: dados-sensores	TopicId: 2Gx7gBI7Q-6U5kfVFZcZ0Q	PartitionCount: 3	ReplicationFactor: 2	Configs: min.insync.replicas=1
-	Topic: dados-sensores	Partition: 0	Leader: 3	Replicas: 2,3	Isr: 3	Elr: 	LastKnownElr: 
-	Topic: dados-sensores	Partition: 1	Leader: 3	Replicas: 3,1	Isr: 3,1	Elr: 	LastKnownElr: 
-	Topic: dados-sensores	Partition: 2	Leader: 1	Replicas: 1,2	Isr: 1	Elr: 	LastKnownElr: 
+===== Tópico dados-sensores (2026-09-25T15:55:26Z) =====
+OCI runtime exec failed: exec failed: unable to start container process: exec: "C:/Program Files/Git/opt/kafka/bin/kafka-topics.sh": stat C:/Program Files/Git/opt/kafka/bin/kafka-topics.sh: no such file or directory
 ===== Grupo grupo-sensores =====
-
-GROUP           TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                     HOST            CLIENT-ID
-grupo-sensores  dados-sensores  0          17              17              0               consumer-1-66045feb-079d-4a65-b12a-8255633873ba /172.18.0.7     consumer-1
-grupo-sensores  dados-sensores  1          19              20              1               consumer-1-66045feb-079d-4a65-b12a-8255633873ba /172.18.0.7     consumer-1
-grupo-sensores  dados-sensores  2          20              20              0               consumer-2-5d0ea716-5e38-47a4-a9ba-6f1237003927 /172.18.0.5     consumer-2
-===== Logs de sensor-produtor consumer-1 consumer-2 desde 2026-09-24T15:16:11Z =====
-sensor-produtor-2  | 2026-09-24T15:16:11.799757587Z Entregue -> partição 1
-sensor-produtor-2  | 2026-09-24T15:16:13.799957030Z Entregue -> partição 0
-sensor-produtor-2  | 2026-09-24T15:16:14.221698318Z %6|1790262974.221|FAIL|rdkafka#producer-1| [thrd:kafka-2:9092/bootstrap]: kafka-2:9092/2: Disconnected (after 22419ms in state UP)
-sensor-produtor-2  | 2026-09-24T15:16:15.800695434Z Entregue -> partição 2
-sensor-produtor-2  | 2026-09-24T15:16:17.801040313Z Entregue -> partição 1
-sensor-produtor-2  | 2026-09-24T15:16:19.801234498Z Entregue -> partição 0
-sensor-produtor-2  | 2026-09-24T15:16:21.801545025Z Entregue -> partição 2
-sensor-produtor-2  | 2026-09-24T15:16:23.801813221Z Entregue -> partição 1
-sensor-produtor-2  | 2026-09-24T15:16:25.802016189Z Entregue -> partição 2
-sensor-produtor-2  | 2026-09-24T15:16:27.802272696Z Entregue -> partição 2
-sensor-produtor-2  | 2026-09-24T15:16:29.802499089Z Entregue -> partição 0
-sensor-produtor-2  | 2026-09-24T15:16:31.802765951Z Entregue -> partição 1
-sensor-produtor-2  | 2026-09-24T15:16:33.802980547Z Entregue -> partição 1
-sensor-produtor-2  | 2026-09-24T15:16:35.803239868Z Entregue -> partição 0
-sensor-produtor-2  | 2026-09-24T15:16:37.803592178Z Entregue -> partição 0
-sensor-produtor-2  | 2026-09-24T15:16:39.804207239Z Entregue -> partição 2
-consumer-1         | 2026-09-24T15:16:11.818923264Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 26.26 | Vibração: 3.96 | Partição: 0
-consumer-1         | 2026-09-24T15:16:13.384763778Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 43.65 | Vibração: 4.38 | Partição: 0
-consumer-1         | 2026-09-24T15:16:14.220587346Z %6|1790262974.220|FAIL|consumer-1#consumer-1| [thrd:kafka-2:9092/bootstrap]: kafka-2:9092/2: Disconnected (after 29226ms in state UP)
-consumer-1         | 2026-09-24T15:16:14.478894280Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 36.26 | Vibração: 4.63 | Partição: 1
-consumer-1         | 2026-09-24T15:16:15.815483051Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 52.11 | Vibração: 6.03 | Partição: 1
-consumer-1         | 2026-09-24T15:16:15.815714485Z [ALERTA] Sensor sensor-fabrica-5fc173b93ca4 com temperatura 52.11 acima do limite de 45.0
-consumer-1         | 2026-09-24T15:16:16.476997986Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 58.47 | Vibração: 2.38 | Partição: 1
-consumer-1         | 2026-09-24T15:16:16.477402408Z [ALERTA] Sensor sensor-fabrica-f757762476a7 com temperatura 58.47 acima do limite de 45.0
-consumer-1         | 2026-09-24T15:16:17.811620304Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 1.11 | Vibração: 4.57 | Partição: 0
-consumer-1         | 2026-09-24T15:16:18.474373050Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 48.21 | Vibração: 0.85 | Partição: 0
-consumer-1         | 2026-09-24T15:16:18.474720566Z [ALERTA] Sensor sensor-fabrica-f757762476a7 com temperatura 48.21 acima do limite de 45.0
-consumer-1         | 2026-09-24T15:16:20.472812045Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 0.26 | Vibração: 0.51 | Partição: 0
-consumer-1         | 2026-09-24T15:16:21.834874351Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 32.62 | Vibração: 1.03 | Partição: 1
-consumer-1         | 2026-09-24T15:16:26.476486987Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 54.23 | Vibração: 3.82 | Partição: 1
-consumer-1         | 2026-09-24T15:16:26.476812972Z [ALERTA] Sensor sensor-fabrica-f757762476a7 com temperatura 54.23 acima do limite de 45.0
-consumer-1         | 2026-09-24T15:16:27.811978176Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 2.38 | Vibração: 4.7 | Partição: 0
-consumer-1         | 2026-09-24T15:16:29.813793732Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 42.52 | Vibração: 4.18 | Partição: 1
-consumer-1         | 2026-09-24T15:16:31.832759708Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 44.37 | Vibração: 2.89 | Partição: 1
-consumer-1         | 2026-09-24T15:16:32.474822771Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: -3.96 | Vibração: 2.05 | Partição: 0
-consumer-1         | 2026-09-24T15:16:33.811303622Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 41.1 | Vibração: 0.7 | Partição: 0
-consumer-1         | 2026-09-24T15:16:34.476054679Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 20.85 | Vibração: 3.68 | Partição: 1
-consumer-1         | 2026-09-24T15:16:35.815131459Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 38.77 | Vibração: 4.92 | Partição: 0
-consumer-1         | 2026-09-24T15:16:36.480839459Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 29.59 | Vibração: 0.38 | Partição: 1
-consumer-1         | 2026-09-24T15:16:39.824386853Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 23.44 | Vibração: 3.36 | Partição: 1
-consumer-1         | 2026-09-24T15:16:40.502939431Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 18.36 | Vibração: 1.28 | Partição: 1
-consumer-2         | 2026-09-24T15:16:13.813966400Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 40.71 | Vibração: 1.17 | Partição: 2
-consumer-2         | 2026-09-24T15:16:14.222815819Z %6|1790262974.222|FAIL|consumer-2#consumer-1| [thrd:kafka-2:9092/bootstrap]: kafka-2:9092/2: Disconnected (after 30362ms in state UP)
-consumer-2         | 2026-09-24T15:16:19.811398059Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 15.53 | Vibração: 3.94 | Partição: 2
-consumer-2         | 2026-09-24T15:16:22.473238345Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 25.66 | Vibração: 1.64 | Partição: 2
-consumer-2         | 2026-09-24T15:16:23.810257686Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 14.76 | Vibração: 5.6 | Partição: 2
-consumer-2         | 2026-09-24T15:16:24.473280634Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 42.04 | Vibração: 2.56 | Partição: 2
-consumer-2         | 2026-09-24T15:16:25.814838844Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: 3.96 | Vibração: 0.93 | Partição: 2
-consumer-2         | 2026-09-24T15:16:28.474520510Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 22.74 | Vibração: 4.3 | Partição: 2
-consumer-2         | 2026-09-24T15:16:30.473871420Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 25.01 | Vibração: 5.13 | Partição: 2
-consumer-2         | 2026-09-24T15:16:37.821757878Z Sensor: sensor-fabrica-5fc173b93ca4 | Temperatura: -2.48 | Vibração: 3.31 | Partição: 2
-consumer-2         | 2026-09-24T15:16:38.477299752Z Sensor: sensor-fabrica-f757762476a7 | Temperatura: 18.07 | Vibração: 2.24 | Partição: 2
-sensor-produtor-1  | 2026-09-24T15:16:12.464218974Z Entregue -> partição 0
-sensor-produtor-1  | 2026-09-24T15:16:14.221254988Z %6|1790262974.221|FAIL|rdkafka#producer-1| [thrd:kafka-2:9092/bootstrap]: kafka-2:9092/2: Disconnected (after 29720ms in state UP)
-sensor-produtor-1  | 2026-09-24T15:16:14.464567018Z Entregue -> partição 0
-sensor-produtor-1  | 2026-09-24T15:16:16.464944435Z Entregue -> partição 1
-sensor-produtor-1  | 2026-09-24T15:16:18.465143056Z Entregue -> partição 1
-sensor-produtor-1  | 2026-09-24T15:16:20.465438261Z Entregue -> partição 0
-sensor-produtor-1  | 2026-09-24T15:16:22.465680938Z Entregue -> partição 0
-sensor-produtor-1  | 2026-09-24T15:16:24.465900681Z Entregue -> partição 2
-sensor-produtor-1  | 2026-09-24T15:16:26.466169217Z Entregue -> partição 2
-sensor-produtor-1  | 2026-09-24T15:16:28.466408368Z Entregue -> partição 1
-sensor-produtor-1  | 2026-09-24T15:16:30.466928498Z Entregue -> partição 2
-sensor-produtor-1  | 2026-09-24T15:16:32.466949124Z Entregue -> partição 2
-sensor-produtor-1  | 2026-09-24T15:16:34.467186473Z Entregue -> partição 0
-sensor-produtor-1  | 2026-09-24T15:16:36.467472875Z Entregue -> partição 1
-sensor-produtor-1  | 2026-09-24T15:16:38.468063419Z Entregue -> partição 1
-sensor-produtor-1  | 2026-09-24T15:16:40.470197418Z Entregue -> partição 2
+OCI runtime exec failed: exec failed: unable to start container process: exec: "C:/Program Files/Git/opt/kafka/bin/kafka-consumer-groups.sh": stat C:/Program Files/Git/opt/kafka/bin/kafka-consumer-groups.sh: no such file or directory
+===== Logs de sensor-produtor consumer-1 consumer-2 desde 2026-09-25T15:55:03Z =====
+consumer-1         | 2026-09-25T15:55:03.713765956Z Sensor: sensor-fabrica-6c9cc21a19f2 | Temperatura: 49.95 | Vibração: 1.31 | Partição: 1
+sensor-produtor-1  | 2026-09-25T15:55:03.704239110Z Entregue -> partição 0
+sensor-produtor-1  | 2026-09-25T15:55:05.704647623Z Entregue -> partição 1
+sensor-produtor-1  | 2026-09-25T15:55:05.926487747Z %6|1790351705.926|FAIL|rdkafka#producer-1| [thrd:kafka-2:9092/bootstrap]: kafka-2:9092/2: Disconnected (after 62224ms in state UP)
+sensor-produtor-1  | 2026-09-25T15:55:07.704953602Z Entregue -> partição 2
+consumer-1         | 2026-09-25T15:55:03.714032436Z [ALERTA] Sensor sensor-fabrica-6c9cc21a19f2 com temperatura 49.95 acima do limite de 45.0
+sensor-produtor-2  | 2026-09-25T15:55:03.985872046Z Entregue -> partição 2
+sensor-produtor-1  | 2026-09-25T15:55:09.705410004Z Entregue -> partição 0
+sensor-produtor-1  | 2026-09-25T15:55:11.705741145Z Entregue -> partição 2
+sensor-produtor-1  | 2026-09-25T15:55:13.706113920Z Entregue -> partição 2
+consumer-1         | 2026-09-25T15:55:05.925674576Z %6|1790351705.925|FAIL|consumer-1#consumer-1| [thrd:kafka-2:9092/bootstrap]: kafka-2:9092/2: Disconnected (after 63682ms in state UP)
+consumer-1         | 2026-09-25T15:55:05.993478575Z Sensor: sensor-fabrica-9f739d80626a | Temperatura: 54.99 | Vibração: 4.72 | Partição: 1
+sensor-produtor-1  | 2026-09-25T15:55:15.706431291Z Entregue -> partição 0
+sensor-produtor-1  | 2026-09-25T15:55:17.706710712Z Entregue -> partição 1
+sensor-produtor-1  | 2026-09-25T15:55:19.707113556Z Entregue -> partição 0
+sensor-produtor-1  | 2026-09-25T15:55:21.707378182Z Entregue -> partição 0
+consumer-1         | 2026-09-25T15:55:05.993723686Z [ALERTA] Sensor sensor-fabrica-9f739d80626a com temperatura 54.99 acima do limite de 45.0
+consumer-1         | 2026-09-25T15:55:07.714028890Z Sensor: sensor-fabrica-6c9cc21a19f2 | Temperatura: 20.16 | Vibração: 4.9 | Partição: 0
+consumer-1         | 2026-09-25T15:55:07.994450091Z Sensor: sensor-fabrica-9f739d80626a | Temperatura: 33.83 | Vibração: 1.37 | Partição: 1
+consumer-1         | 2026-09-25T15:55:09.994785952Z Sensor: sensor-fabrica-9f739d80626a | Temperatura: 11.45 | Vibração: 4.38 | Partição: 0
+consumer-2         | 2026-09-25T15:55:03.996017163Z Sensor: sensor-fabrica-9f739d80626a | Temperatura: 37.92 | Vibração: 5.16 | Partição: 2
+consumer-1         | 2026-09-25T15:55:11.994343791Z Sensor: sensor-fabrica-9f739d80626a | Temperatura: 14.11 | Vibração: 1.56 | Partição: 1
+consumer-1         | 2026-09-25T15:55:13.713834907Z Sensor: sensor-fabrica-6c9cc21a19f2 | Temperatura: 50.77 | Vibração: 2.46 | Partição: 0
+sensor-produtor-2  | 2026-09-25T15:55:05.925678788Z %6|1790351705.925|FAIL|rdkafka#producer-1| [thrd:kafka-2:9092/bootstrap]: kafka-2:9092/2: Disconnected (after 61940ms in state UP)
+consumer-2         | 2026-09-25T15:55:05.714247112Z Sensor: sensor-fabrica-6c9cc21a19f2 | Temperatura: 35.16 | Vibração: 2.48 | Partição: 2
+consumer-2         | 2026-09-25T15:55:09.715530436Z Sensor: sensor-fabrica-6c9cc21a19f2 | Temperatura: -2.27 | Vibração: 3.15 | Partição: 2
+consumer-2         | 2026-09-25T15:55:11.715337539Z Sensor: sensor-fabrica-6c9cc21a19f2 | Temperatura: -3.75 | Vibração: 5.25 | Partição: 2
+sensor-produtor-2  | 2026-09-25T15:55:05.986114869Z Entregue -> partição 2
+consumer-1         | 2026-09-25T15:55:13.714227413Z [ALERTA] Sensor sensor-fabrica-6c9cc21a19f2 com temperatura 50.77 acima do limite de 45.0
+consumer-1         | 2026-09-25T15:55:13.995076142Z Sensor: sensor-fabrica-9f739d80626a | Temperatura: 9.87 | Vibração: 3.49 | Partição: 1
+consumer-1         | 2026-09-25T15:55:15.714279400Z Sensor: sensor-fabrica-6c9cc21a19f2 | Temperatura: 0.14 | Vibração: 0.57 | Partição: 1
+consumer-2         | 2026-09-25T15:55:15.997468216Z Sensor: sensor-fabrica-9f739d80626a | Temperatura: 17.03 | Vibração: 4.79 | Partição: 2
+consumer-2         | 2026-09-25T15:55:17.998177184Z Sensor: sensor-fabrica-9f739d80626a | Temperatura: 20.48 | Vibração: 6.47 | Partição: 2
+consumer-2         | 2026-09-25T15:55:19.997252265Z Sensor: sensor-fabrica-9f739d80626a | Temperatura: 34.88 | Vibração: 1.83 | Partição: 2
+sensor-produtor-1  | 2026-09-25T15:55:23.707672187Z Entregue -> partição 2
+sensor-produtor-1  | 2026-09-25T15:55:25.707900821Z Entregue -> partição 0
+sensor-produtor-1  | 2026-09-25T15:55:27.708102272Z Entregue -> partição 2
+sensor-produtor-2  | 2026-09-25T15:55:07.986598898Z Entregue -> partição 1
+consumer-1         | 2026-09-25T15:55:17.713925174Z Sensor: sensor-fabrica-6c9cc21a19f2 | Temperatura: -4.69 | Vibração: 0.7 | Partição: 0
+sensor-produtor-2  | 2026-09-25T15:55:09.986905369Z Entregue -> partição 1
+consumer-2         | 2026-09-25T15:55:21.716663978Z Sensor: sensor-fabrica-6c9cc21a19f2 | Temperatura: 14.77 | Vibração: 6.51 | Partição: 2
+consumer-2         | 2026-09-25T15:55:21.998372679Z Sensor: sensor-fabrica-9f739d80626a | Temperatura: 18.36 | Vibração: 2.92 | Partição: 2
+consumer-2         | 2026-09-25T15:55:25.716453444Z Sensor: sensor-fabrica-6c9cc21a19f2 | Temperatura: 2.5 | Vibração: 5.32 | Partição: 2
+sensor-produtor-2  | 2026-09-25T15:55:11.987188589Z Entregue -> partição 0
+consumer-1         | 2026-09-25T15:55:19.714755193Z Sensor: sensor-fabrica-6c9cc21a19f2 | Temperatura: 4.04 | Vibração: 2.27 | Partição: 0
+consumer-1         | 2026-09-25T15:55:23.714975184Z Sensor: sensor-fabrica-6c9cc21a19f2 | Temperatura: 9.0 | Vibração: 3.76 | Partição: 0
+sensor-produtor-2  | 2026-09-25T15:55:13.987537279Z Entregue -> partição 1
+sensor-produtor-2  | 2026-09-25T15:55:15.987846870Z Entregue -> partição 1
+consumer-1         | 2026-09-25T15:55:23.996392114Z Sensor: sensor-fabrica-9f739d80626a | Temperatura: -0.52 | Vibração: 5.58 | Partição: 0
+consumer-1         | 2026-09-25T15:55:25.997508504Z Sensor: sensor-fabrica-9f739d80626a | Temperatura: 8.29 | Vibração: 4.09 | Partição: 0
+consumer-2         | 2026-09-25T15:55:27.717529345Z Sensor: sensor-fabrica-6c9cc21a19f2 | Temperatura: 59.0 | Vibração: 3.09 | Partição: 2
+sensor-produtor-2  | 2026-09-25T15:55:17.988170553Z Entregue -> partição 2
+sensor-produtor-2  | 2026-09-25T15:55:19.988463132Z Entregue -> partição 2
+sensor-produtor-2  | 2026-09-25T15:55:21.988860697Z Entregue -> partição 2
+sensor-produtor-2  | 2026-09-25T15:55:23.989077278Z Entregue -> partição 2
+sensor-produtor-2  | 2026-09-25T15:55:25.989443219Z Entregue -> partição 0
+consumer-2         | 2026-09-25T15:55:27.717965812Z [ALERTA] Sensor sensor-fabrica-6c9cc21a19f2 com temperatura 59.0 acima do limite de 45.0

@@ -8,7 +8,7 @@
 |---|---|
 | Miguel Mendes | 2111705 |
 | Simão Oliveira | 2620261 |
-| _(nome)_ | _(matrícula)_ |
+| Luana Göbel | 2210879 |
 
 ---
 
